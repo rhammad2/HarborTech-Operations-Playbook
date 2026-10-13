@@ -1,0 +1,77 @@
+
+# Week 6: Containers and Serverless Computing
+
+## HarborTech Ticket Summary
+
+Ticket TKT-2026-0006 asks whether the client still needs an EC2 server. The server runs a daily report and a small API but stays idle most of the time. The goal is to find a better way to run these workloads.
+
+## Client Impact
+
+Keeping an EC2 server running when it is not needed can increase costs and maintenance. Choosing the right service can reduce wasted resources and make scaling easier. The wrong service could also cause application problems.
+
+## AWS Services Involved
+
+- Amazon EC2: Runs virtual servers.
+- Containers: Package an application and its dependencies.
+- Amazon ECS and AWS Fargate: Run and manage container workloads.
+- AWS Lambda: Runs code without managing servers.
+- Amazon API Gateway: Receives and routes API requests.
+- Amazon EventBridge: Can start scheduled tasks.
+- AWS Step Functions: Coordinates tasks in a workflow.
+- IAM execution roles: Give applications permission to use AWS services.
+- Amazon CloudWatch: Provides logs and monitoring.
+
+## Virtualization Connection
+
+EC2 uses virtual machines that have their own operating systems. Containers share the host operating-system kernel and package the application with its dependencies. Lambda manages more of the infrastructure for us, so we do not have to maintain a server for each task.
+
+## Evidence Reviewed
+
+The daily report runs once each morning, finishes quickly, and does not keep local data between runs. The API receives requests only sometimes. The current EC2 server stays idle for long periods.
+
+In the Week 6 AWS practice, I tested a Lambda function with valid and missing input. Valid input returned a successful application response, while missing input returned an error. I corrected the input, confirmed the function worked, and deleted my test function.
+
+## Operational Analysis
+
+Lambda is a good option for the daily report because it runs for a short time and does not need a server running all day.
+
+API Gateway and Lambda could handle the small API when requests arrive.
+
+ECS with Fargate could be considered if the application needs container packaging or a longer-running process.
+
+EC2 is more suitable when full operating-system control is required.
+
+## Recommendation
+
+I recommend evaluating EventBridge and Lambda for the daily report, and API Gateway with Lambda for the small API.
+
+AWS would manage the underlying servers. HarborTech would still manage the application code, IAM permissions, security, monitoring, and testing.
+
+Before migration, the team should confirm execution time, dependencies, API traffic, costs, and network access.
+
+## Escalation Notes
+
+A production migration, API change, or architecture decision needs approval from the appropriate HarborTech team.
+
+Any missing permissions, unsupported dependencies, or networking problems should be reported before making changes.
+
+I did not make production changes.
+
+## Lessons Learned
+
+I learned that not every application needs a server running all day. Lambda works well for short tasks, API Gateway handles API requests, and containers help package applications.
+
+The best choice depends on how the workload runs and what the team needs to manage.
+
+## Professional Vocabulary
+
+- **Container:** A package containing an application and the files it needs to run.
+- **Serverless Computing:** Running applications without managing the underlying servers.
+- **AWS Lambda:** An AWS service that runs code when triggered.
+- **API Gateway:** A service that receives and routes API requests.
+- **Execution Role:** An IAM role that gives an AWS service permissions.
+- **Event Trigger:** An event that starts a task.
+- **Step Functions:** A service that connects steps in a workflow.
+- **VPC-Connected Lambda:** A Lambda function configured to access resources through a VPC.
+- **Runtime:** The environment used to run application code.
+- **Abstraction:** Hiding infrastructure details to make systems easier to manage.
